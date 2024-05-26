@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:splitty/BillSummary.dart';
 import 'package:splitty/NewBill.dart';
+
+import 'Bill.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +15,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // This is your list of bills. You can replace this with your actual list.
-    List<String> bills = ['Bill 1', 'Bill 2', 'Bill 3'];
+    List<Bill> bills = [
+      Bill(
+        date: '2024-05-26',
+        name: 'Electricity Bill',
+        total: 150.0,
+        attachment: 'electricity_bill.pdf',
+      ),
+      Bill(
+        date: '2024-05-25',
+        name: 'Internet Bill',
+        total: 50.0,
+        attachment: 'internet_bill.pdf',
+      ),
+      Bill(
+        date: '2024-05-24',
+        name: 'Water Bill',
+        total: 30.0,
+        attachment: 'water_bill.pdf',
+      ),
+      // Add more bills as needed
+    ];
 
     return MaterialApp(
       home: Builder(
@@ -20,33 +43,52 @@ class MyApp extends StatelessWidget {
           appBar: AppBar(
             title: const Text("Splitty"),
           ),
-          body: ListView.builder(
-            itemCount: bills.length + 1, // Add one for the "Add Bill" button
-            itemBuilder: (context, index) {
-              if (index < bills.length) {
-                return ListTile(
-                  title: Text(bills[index]),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => NewBill()), // Navigate to BillSummary when a bill is clicked
+          body: Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                  itemCount: bills.length, // No need to add one for the "Add Bill" button
+                  itemBuilder: (context, index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 2), // This adds the border
+                      ),
+                      child: ListTile(
+                        title: Text(bills[index].name),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => BillSummary(bill: bills[index])), // Navigate to BillSummary when a bill is clicked
+                          );
+                        },
+                      ),
                     );
                   },
-                );
-              } else {
-                return Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => NewBill()),
-                      );
-                    },
-                    child: const Text("Add Bill"),
+                ),
+              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NewBill()),
+                    );
+                  },
+                  child: const Text(
+                    "Add Bill",
+                    style: TextStyle(color: Colors.white), // This makes the text color white
                   ),
-                );
-              }
-            },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue), // This makes the button background blue
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // This makes the button corners rounded
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
